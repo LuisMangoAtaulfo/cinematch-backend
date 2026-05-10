@@ -17,6 +17,8 @@ import com.cinematchbackend.repositories.SalaRepository;
 import com.cinematchbackend.repositories.UsuarioRepository;
 import com.cinematchbackend.services.interfaces.SalaService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,20 +26,26 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SalaServiceImpl implements SalaService {
 
     private final SalaRepository salaRepository;
     private final UsuarioRepository usuarioRepository;
     private final MatchRepository matchRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public SalaResponseDTO crearSala(SalaRequestDTO dto) {
         UsuarioEntidad usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + dto.getUsuarioId()));
-        SalaEntidad sala = new SalaEntidad();
-        sala.setCodigo(generarCodigoUnico());
-        sala.setEstado(EstadoSala.ESPERANDO);
-        sala.setUsuario1(usuario);
+
+        SalaEntidad sala = new SalaEntidad.Builder()
+                .codigo(generarCodigoUnico())
+                .estado(EstadoSala.ESPERANDO)
+                .usuario1(usuario)
+                .build();
+
+        log.info("Sala creada exitosamanete {}:",sala.getCodigo());
         return mapearAResponse(salaRepository.save(sala));
     }
 
@@ -45,14 +53,25 @@ public class SalaServiceImpl implements SalaService {
     public SalaResponseDTO unirseASala(UnirseSalaDTO dto) {
         SalaEntidad sala = salaRepository.findByCodigo(dto.getCodigo())
                 .orElseThrow(() -> new CodigoSalaInvalidoException("Código de sala inválido: " + dto.getCodigo()));
+
         if (sala.getEstado() != EstadoSala.ESPERANDO) {
             throw new SalaActivaException("La sala ya está activa o finalizada");
         }
+
         UsuarioEntidad usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + dto.getUsuarioId()));
+
         sala.setUsuario2(usuario);
         sala.setEstado(EstadoSala.ACTIVA);
+
         return mapearAResponse(salaRepository.save(sala));
+    }
+
+    @Override
+    public SalaResponseDTO obtenerSala(Long salaId) {
+        SalaEntidad sala = salaRepository.findById(salaId)
+                .orElseThrow(() -> new SalaNoEncontradaException("Sala no encontrada: " + salaId));
+        return mapearAResponse(sala);
     }
 
     @Override
@@ -61,6 +80,11 @@ public class SalaServiceImpl implements SalaService {
                 .orElseThrow(() -> new SalaNoEncontradaException("Sala no encontrada: " + salaId));
         sala.setEstado(EstadoSala.FINALIZADA);
         salaRepository.save(sala);
+
+        messagingTemplate.convertAndSend(
+                "/topic/sala/" + salaId + "/finalizar",
+                true
+        );
     }
 
     @Override

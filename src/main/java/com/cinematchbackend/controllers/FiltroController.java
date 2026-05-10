@@ -20,4 +20,11 @@ public class FiltroController {
     public ResponseEntity<List<ContenidoResponseDTO>> aplicarFiltros(@RequestBody FiltroRequestDTO dto) {
         return ResponseEntity.ok(filtroService.procesarFiltros(dto));
     }
+
+    @GetMapping("/{salaId}")
+    public ResponseEntity<List<ContenidoResponseDTO>> obtenerContenidoPorSala(@PathVariable Long salaId) {
+        return filtroService.obtenerContenidoPorSala(salaId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
+    }
 }

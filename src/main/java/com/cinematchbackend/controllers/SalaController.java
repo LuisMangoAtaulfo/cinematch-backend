@@ -38,4 +38,9 @@ public class SalaController {
     public ResponseEntity<List<MatchResponseDTO>> obtenerMatches(@PathVariable Long id) {
         return ResponseEntity.ok(salaService.obtenerMatches(id));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SalaResponseDTO> obtenerSala(@PathVariable Long id) {
+        return ResponseEntity.ok(salaService.obtenerSala(id));
+    }
 }

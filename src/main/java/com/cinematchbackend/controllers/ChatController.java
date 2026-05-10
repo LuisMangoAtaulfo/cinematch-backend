@@ -6,6 +6,7 @@ import com.cinematchbackend.services.interfaces.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +17,13 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
+    // En lugar de @SendTo, inyectar SimpMessagingTemplate
+    private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/chat.enviar")
-    @SendTo("/topic/sala")
-    public MensajeResponseDTO enviarMensaje(MensajeRequestDTO dto) {
-        return chatService.procesarMensaje(dto);
+    public void enviarMensaje(MensajeRequestDTO dto) {
+        MensajeResponseDTO response = chatService.procesarMensaje(dto);
+        messagingTemplate.convertAndSend("/topic/sala/" + dto.getSalaId(), response);
     }
 
     @GetMapping("/{salaId}")

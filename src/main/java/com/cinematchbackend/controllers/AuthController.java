@@ -7,12 +7,14 @@ import com.cinematchbackend.entities.UsuarioEntidad;
 import com.cinematchbackend.services.interfaces.AdministradorService;
 import com.cinematchbackend.services.interfaces.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final UsuarioService usuarioService;
@@ -26,6 +28,7 @@ public class AuthController {
         response.setToken(token);
         response.setNombre(usuario.getNombre());
         response.setCorreo(usuario.getCorreo());
+        log.info("Registro exitoso: {}",dto.getCorreo());
         return ResponseEntity.ok(response);
     }
 
@@ -37,6 +40,7 @@ public class AuthController {
         response.setToken(token);
         response.setCorreo(dto.getCorreo());
         response.setNombre(nombreUsuario);
+        log.info("Login exitoso: {}",dto.getCorreo());
         return ResponseEntity.ok(response);
     }
 

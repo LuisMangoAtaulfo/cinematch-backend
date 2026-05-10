@@ -31,3 +31,19 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# ══ CONFIGURACIÓN SENSIBLE ══════════════════════════════
+src/main/resources/application.properties
+src/main/resources/application-prod.properties
+src/main/resources/application-prod.yml
+src/main/resources/application.yml
+
+
+# ══ IDE ═════════════════════════════════════════════════
+.idea/
+*.swp
+
+# ══ SISTEMA ═════════════════════════════════════════════
+.DS_Store
+Thumbs.db

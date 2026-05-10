@@ -6,7 +6,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -17,12 +16,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtService {
 
-    @Value("${jwt.secret}")
-    private String secret;
-
-    @Value("${jwt.expiration}")
-    private Long expiration;
-
     private final TokenInvalidadoRepository tokenInvalidadoRepository;
 
     public String generarToken(Long id, String correo, String rol) {
@@ -31,9 +24,13 @@ public class JwtService {
                 .claim("rol", rol)
                 .claim("id", id)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .expiration(new Date(System.currentTimeMillis() + ConfiguracionApp.getInstance().getJwtExpiration()))
                 .signWith(getKey())
                 .compact();
+    }
+
+    public Long extraerId(String token) {
+        return extraerClaims(token).get("id", Long.class);
     }
 
     public String extraerCorreo(String token) {
@@ -42,10 +39,6 @@ public class JwtService {
 
     public String extraerRol(String token) {
         return extraerClaims(token).get("rol", String.class);
-    }
-
-    public Long extraerId(String token) {
-        return extraerClaims(token).get("id", Long.class);
     }
 
     public boolean esValido(String token) {
@@ -75,6 +68,9 @@ public class JwtService {
     }
 
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(
+                ConfiguracionApp.getInstance().getJwtSecret()
+                        .getBytes(StandardCharsets.UTF_8)
+        );
     }
 }

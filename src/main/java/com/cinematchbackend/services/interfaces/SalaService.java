@@ -10,6 +10,7 @@ import java.util.List;
 public interface SalaService {
     SalaResponseDTO crearSala(SalaRequestDTO dto);
     SalaResponseDTO unirseASala(UnirseSalaDTO dto);
+    SalaResponseDTO obtenerSala(Long salaId);
     void finalizarSala(Long salaId);
     void eliminarDatosSala(Long salaId);
     List<MatchResponseDTO> obtenerMatches(Long salaId);

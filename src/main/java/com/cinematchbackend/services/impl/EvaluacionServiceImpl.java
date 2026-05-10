@@ -9,7 +9,7 @@ import com.cinematchbackend.exceptions.ContenidoNoEncontradoException;
 import com.cinematchbackend.exceptions.EvaluacionDuplicadaException;
 import com.cinematchbackend.exceptions.SalaNoEncontradaException;
 import com.cinematchbackend.exceptions.UsuarioNoEncontradoException;
-import com.cinematchbackend.observer.MatchObserver;
+import com.cinematchbackend.observer.MatchSubject;
 import com.cinematchbackend.repositories.ContenidoRepository;
 import com.cinematchbackend.repositories.EvaluacionRepository;
 import com.cinematchbackend.repositories.SalaRepository;
@@ -30,7 +30,7 @@ public class EvaluacionServiceImpl implements EvaluacionService {
     private final UsuarioRepository usuarioRepository;
     private final ContenidoRepository contenidoRepository;
     private final MatchService matchService;
-    private final List<MatchObserver> observers;
+    private final MatchSubject matchSubject;
 
     @Override
     public void registrarEvaluacion(EvaluacionRequestDTO dto) {
@@ -54,7 +54,7 @@ public class EvaluacionServiceImpl implements EvaluacionService {
 
         if (dto.getDecision() && compararEvaluaciones(dto.getSalaId(), dto.getContenidoId())) {
             matchService.registrarMatch(dto.getSalaId(), dto.getContenidoId());
-            observers.forEach(o -> o.notificar(dto.getSalaId(), dto.getContenidoId()));
+            matchSubject.notificarObservers(dto.getSalaId(), dto.getContenidoId());
         }
     }
 

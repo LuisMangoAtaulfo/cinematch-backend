@@ -51,4 +51,49 @@ public class SalaEntidad {
 
     @OneToOne(mappedBy = "sala", cascade = CascadeType.ALL, orphanRemoval = true)
     private CalificacionEntidad calificacion;
+
+    private SalaEntidad(Builder builder) {
+        this.codigo       = builder.codigo;
+        this.estado       = builder.estado;
+        this.fechaCreacion = builder.fechaCreacion;
+        this.usuario1     = builder.usuario1;
+        this.usuario2     = builder.usuario2;
+    }
+
+    public static class Builder {
+        private String codigo;
+        private EstadoSala estado = EstadoSala.ESPERANDO;
+        private LocalDateTime fechaCreacion = LocalDateTime.now();
+        private UsuarioEntidad usuario1;
+        private UsuarioEntidad usuario2;
+
+        public Builder codigo(String codigo) {
+            this.codigo = codigo;
+            return this;
+        }
+
+        public Builder estado(EstadoSala estado) {
+            this.estado = estado;
+            return this;
+        }
+
+        public Builder fechaCreacion(LocalDateTime fechaCreacion) {
+            this.fechaCreacion = fechaCreacion;
+            return this;
+        }
+
+        public Builder usuario1(UsuarioEntidad usuario1) {
+            this.usuario1 = usuario1;
+            return this;
+        }
+
+        public Builder usuario2(UsuarioEntidad usuario2) {
+            this.usuario2 = usuario2;
+            return this;
+        }
+
+        public SalaEntidad build() {
+            return new SalaEntidad(this);
+        }
+    }
 }
