@@ -43,7 +43,7 @@ public class AdministradorServiceImpl implements AdministradorService {
         AdministradorEntidad admin = new AdministradorEntidad();
         admin.setCorreo(correo);
         admin.setPassword(passwordEncoder.encode(password));
-        admin.setRol(RolUsuario.USUARIO);
+        admin.setRol(RolUsuario.ADMINISTRADOR);
         return administradorRepository.save(admin);
     }
     public boolean validarCorreoDisponible(String correo) {

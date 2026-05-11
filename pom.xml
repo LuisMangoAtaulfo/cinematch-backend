@@ -157,6 +157,15 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>application-prod.properties</exclude>
+                    <exclude>log4j2-prod.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
 </project>

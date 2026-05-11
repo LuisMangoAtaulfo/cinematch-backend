@@ -12,4 +12,5 @@ public interface UsuarioService {
     void invalidarToken(String token);
     UsuarioResponseDTO actualizarPerfil(Long id, PerfilUpdateDTO dto);
     String obtenerNombreUsuarioLogeado(String correo);
+    UsuarioResponseDTO obtenerDatosUsuarioLogeado(Long id);
 }

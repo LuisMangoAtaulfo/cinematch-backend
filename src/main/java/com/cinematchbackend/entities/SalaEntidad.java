@@ -49,8 +49,8 @@ public class SalaEntidad {
     @OneToOne(mappedBy = "sala", cascade = CascadeType.ALL, orphanRemoval = true)
     private FiltroEntidad filtro;
 
-    @OneToOne(mappedBy = "sala", cascade = CascadeType.ALL, orphanRemoval = true)
-    private CalificacionEntidad calificacion;
+    //@OneToOne(mappedBy = "sala", cascade = CascadeType.ALL, orphanRemoval = true)
+    //private CalificacionEntidad calificacion;
 
     private SalaEntidad(Builder builder) {
         this.codigo       = builder.codigo;

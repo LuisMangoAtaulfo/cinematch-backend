@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/metricas/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/retroalimentacion/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/plataformas").authenticated()
                         .requestMatchers("/api/plataformas/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
@@ -53,7 +54,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedOrigins(List.of("http://localhost:4200","https://cinematch.mangosystem.org"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

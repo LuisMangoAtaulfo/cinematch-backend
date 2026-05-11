@@ -20,4 +20,10 @@ public class PerfilController {
             @RequestBody PerfilUpdateDTO dto) {
         return ResponseEntity.ok(usuarioService.actualizarPerfil(id, dto));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> obtenerDescripcionPerfil(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.obtenerDatosUsuarioLogeado(id));
+    }
 }

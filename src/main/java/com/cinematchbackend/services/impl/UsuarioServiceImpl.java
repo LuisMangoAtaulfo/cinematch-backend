@@ -89,5 +89,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         return response;
     }
 
+    @Override
+    public UsuarioResponseDTO obtenerDatosUsuarioLogeado(Long id) {
+        UsuarioEntidad usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + id));
+        return mapearAResponse(usuario);
+    }
+
 
 }

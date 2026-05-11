@@ -26,7 +26,7 @@ public class CalificacionEntidad {
     @JoinColumn(name = "usuario_id", nullable = false)
     private UsuarioEntidad usuario;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "sala_id", nullable = false)
     private SalaEntidad sala;
 }
