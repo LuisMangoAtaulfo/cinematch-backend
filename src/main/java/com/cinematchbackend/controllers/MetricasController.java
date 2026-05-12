@@ -1,10 +1,13 @@
 package com.cinematchbackend.controllers;
 
+import com.cinematchbackend.dto.response.MetricasHistorialResponseDTO;
 import com.cinematchbackend.dto.response.MetricasResponseDTO;
 import com.cinematchbackend.services.interfaces.MetricasService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/metricas")
@@ -16,5 +19,10 @@ public class MetricasController {
     @GetMapping
     public ResponseEntity<MetricasResponseDTO> obtenerMetricas() {
         return ResponseEntity.ok(metricasService.procesarMetricas());
+    }
+
+    @GetMapping("/historial")
+    public ResponseEntity<List<MetricasHistorialResponseDTO>> obtenerHistorial() {
+        return ResponseEntity.ok(metricasService.obtenerHistorial());
     }
 }
