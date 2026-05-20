@@ -13,6 +13,7 @@ import com.cinematchbackend.exceptions.SalaActivaException;
 import com.cinematchbackend.exceptions.SalaNoEncontradaException;
 import com.cinematchbackend.exceptions.UsuarioNoEncontradoException;
 import com.cinematchbackend.repositories.MatchRepository;
+import com.cinematchbackend.repositories.MensajeRepository;
 import com.cinematchbackend.repositories.SalaRepository;
 import com.cinematchbackend.repositories.UsuarioRepository;
 import com.cinematchbackend.services.interfaces.SalaService;
@@ -33,6 +34,7 @@ public class SalaServiceImpl implements SalaService {
     private final UsuarioRepository usuarioRepository;
     private final MatchRepository matchRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final MensajeRepository mensajeRepository;
 
     @Override
     public SalaResponseDTO crearSala(SalaRequestDTO dto) {
@@ -85,6 +87,8 @@ public class SalaServiceImpl implements SalaService {
                 "/topic/sala/" + salaId + "/finalizar",
                 true
         );
+
+        mensajeRepository.deleteBySalaId(salaId); // ← aquí
     }
 
     @Override
