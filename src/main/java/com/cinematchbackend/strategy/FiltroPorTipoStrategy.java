@@ -21,6 +21,9 @@ public class FiltroPorTipoStrategy implements FiltroStrategy {
 
     @Override
     public List<ContenidoEntidad> filtrar(FiltroRequestDTO dto) {
+        if (dto.getAnio() != null) {
+            return contenidoRepository.findByAnioAndTipo(dto.getAnio(), dto.getTipo());
+        }
         return contenidoRepository.findByTipo(dto.getTipo());
     }
 }

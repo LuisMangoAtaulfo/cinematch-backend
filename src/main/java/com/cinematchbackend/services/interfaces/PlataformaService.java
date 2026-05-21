@@ -8,4 +8,6 @@ import java.util.List;
 public interface PlataformaService {
     List<PlataformaResponseDTO> listarPlataformas();
     void actualizarEstado(PlataformaUpdateDTO dto);
+    boolean estaEnUso(Long id);
+
 }

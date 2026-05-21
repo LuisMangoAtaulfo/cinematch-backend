@@ -10,4 +10,5 @@ public class FiltroRequestDTO {
     private TipoContenido tipo;
     private GeneroContenido genero;
     private String plataforma;
+    private Integer anio;
 }

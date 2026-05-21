@@ -8,22 +8,23 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+
 @Component
 @RequiredArgsConstructor
-public class FiltroPorTipoYGeneroStrategy implements FiltroStrategy {
+public class FiltroPorAnioStrategy implements FiltroStrategy {
 
     private final ContenidoRepository contenidoRepository;
 
     @Override
     public boolean aplica(FiltroRequestDTO dto) {
-        return dto.getPlataforma() == null && dto.getTipo() != null && dto.getGenero() != null;
+        return dto.getPlataforma() == null
+                && dto.getTipo() == null
+                && dto.getGenero() == null
+                && dto.getAnio() != null;
     }
 
     @Override
     public List<ContenidoEntidad> filtrar(FiltroRequestDTO dto) {
-        if (dto.getAnio() != null) {
-            return contenidoRepository.findByAnioAndTipoAndGenero(dto.getAnio(), dto.getTipo(), dto.getGenero());
-        }
-        return contenidoRepository.findByTipoAndGenero(dto.getTipo(), dto.getGenero());
+        return contenidoRepository.findByAnio(dto.getAnio());
     }
 }

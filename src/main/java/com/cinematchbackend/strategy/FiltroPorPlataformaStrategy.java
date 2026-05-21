@@ -21,15 +21,37 @@ public class FiltroPorPlataformaStrategy implements FiltroStrategy {
 
     @Override
     public List<ContenidoEntidad> filtrar(FiltroRequestDTO dto) {
-        if (dto.getTipo() != null && dto.getGenero() != null) {
+        boolean tieneAnio   = dto.getAnio() != null;
+        boolean tieneTipo   = dto.getTipo() != null;
+        boolean tieneGenero = dto.getGenero() != null;
+
+        // ── Con año ──────────────────────────────────────────────────────────
+        if (tieneAnio) {
+            if (tieneTipo && tieneGenero) {
+                return contenidoRepository.findByPlataformaNombreAndAnioAndTipoAndGenero(
+                        dto.getPlataforma(), dto.getAnio(), dto.getTipo(), dto.getGenero());
+            }
+            if (tieneTipo) {
+                return contenidoRepository.findByPlataformaNombreAndAnioAndTipo(
+                        dto.getPlataforma(), dto.getAnio(), dto.getTipo());
+            }
+            if (tieneGenero) {
+                return contenidoRepository.findByPlataformaNombreAndAnioAndGenero(
+                        dto.getPlataforma(), dto.getAnio(), dto.getGenero());
+            }
+            return contenidoRepository.findByPlataformaNombreAndAnio(
+                    dto.getPlataforma(), dto.getAnio());
+        }
+
+        if (tieneTipo && tieneGenero) {
             return contenidoRepository.findByPlataformaNombreAndTipoAndGenero(
                     dto.getPlataforma(), dto.getTipo(), dto.getGenero());
         }
-        if (dto.getTipo() != null) {
+        if (tieneTipo) {
             return contenidoRepository.findByPlataformaNombreAndTipo(
                     dto.getPlataforma(), dto.getTipo());
         }
-        if (dto.getGenero() != null) {
+        if (tieneGenero) {
             return contenidoRepository.findByPlataformaNombreAndGenero(
                     dto.getPlataforma(), dto.getGenero());
         }

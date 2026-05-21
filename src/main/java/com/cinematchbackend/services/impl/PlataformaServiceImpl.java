@@ -4,6 +4,7 @@ import com.cinematchbackend.dto.request.PlataformaUpdateDTO;
 import com.cinematchbackend.dto.response.PlataformaResponseDTO;
 import com.cinematchbackend.entities.PlataformaEntidad;
 import com.cinematchbackend.exceptions.PlataformaNoEncontradaException;
+import com.cinematchbackend.repositories.ContenidoPlataformaRepository;
 import com.cinematchbackend.repositories.PlataformaRepository;
 import com.cinematchbackend.services.interfaces.PlataformaService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 public class PlataformaServiceImpl implements PlataformaService {
 
     private final PlataformaRepository plataformaRepository;
+    private final ContenidoPlataformaRepository contenidoPlataformaRepository; // ← NUEVO
 
     @Override
     public List<PlataformaResponseDTO> listarPlataformas() {
@@ -30,6 +32,16 @@ public class PlataformaServiceImpl implements PlataformaService {
                 .orElseThrow(() -> new PlataformaNoEncontradaException("Plataforma no encontrada: " + dto.getId()));
         plataforma.setHabilitada(dto.getHabilitada());
         plataformaRepository.save(plataforma);
+    }
+
+    @Override
+    public boolean estaEnUso(Long id) { // ← NUEVO
+        PlataformaEntidad plataforma = plataformaRepository.findById(id)
+                .orElseThrow(() -> new PlataformaNoEncontradaException("Plataforma no encontrada: " + id));
+
+        return !contenidoPlataformaRepository
+                .findByPlataformaNombre(plataforma.getNombre())
+                .isEmpty();
     }
 
     private PlataformaResponseDTO mapearAResponse(PlataformaEntidad plataforma) {

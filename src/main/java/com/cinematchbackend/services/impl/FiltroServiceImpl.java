@@ -35,6 +35,8 @@ public class FiltroServiceImpl implements FiltroService {
         filtro.setTipo(dto.getTipo());
         filtro.setGenero(dto.getGenero());
         filtro.setPlataforma(dto.getPlataforma());
+        filtro.setAnio(dto.getAnio()); // ← NUEVO
+
         filtroRepository.save(filtro);
 
         return filtroContext.ejecutar(dto).stream()
@@ -50,6 +52,8 @@ public class FiltroServiceImpl implements FiltroService {
             dto.setTipo(filtro.getTipo());
             dto.setGenero(filtro.getGenero());
             dto.setPlataforma(filtro.getPlataforma());
+            dto.setAnio(filtro.getAnio()); // ← NUEVO
+
             return filtroContext.ejecutar(dto).stream()
                     .map(this::mapearAResponse)
                     .toList();

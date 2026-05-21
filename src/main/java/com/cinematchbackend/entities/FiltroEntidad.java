@@ -30,6 +30,8 @@ public class FiltroEntidad {
 
     private LocalDateTime fechaFin;
 
+    private Integer anio;
+
     @OneToOne
     @JoinColumn(name = "sala_id", nullable = false)
     private SalaEntidad sala;

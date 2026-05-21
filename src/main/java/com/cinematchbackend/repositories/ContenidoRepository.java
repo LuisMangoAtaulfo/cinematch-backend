@@ -11,9 +11,25 @@ import java.util.List;
 
 public interface ContenidoRepository extends JpaRepository<ContenidoEntidad, String> {
 
+    // ── Filtros sin plataforma ────────────────────────────────────────────────
+
     List<ContenidoEntidad> findByTipo(TipoContenido tipo);
+
     List<ContenidoEntidad> findByGenero(GeneroContenido genero);
+
     List<ContenidoEntidad> findByTipoAndGenero(TipoContenido tipo, GeneroContenido genero);
+
+    // ── Filtros por año (sin plataforma) ─────────────────────────────────────
+
+    List<ContenidoEntidad> findByAnio(Integer anio);
+
+    List<ContenidoEntidad> findByAnioAndTipo(Integer anio, TipoContenido tipo);
+
+    List<ContenidoEntidad> findByAnioAndGenero(Integer anio, GeneroContenido genero);
+
+    List<ContenidoEntidad> findByAnioAndTipoAndGenero(Integer anio, TipoContenido tipo, GeneroContenido genero);
+
+    // ── Filtros con plataforma (sin año) ─────────────────────────────────────
 
     @Query("SELECT DISTINCT c FROM ContenidoEntidad c JOIN c.plataformas cp JOIN cp.plataforma p WHERE p.nombre = :nombre")
     List<ContenidoEntidad> findByPlataformaNombre(@Param("nombre") String nombre);
@@ -26,4 +42,18 @@ public interface ContenidoRepository extends JpaRepository<ContenidoEntidad, Str
 
     @Query("SELECT DISTINCT c FROM ContenidoEntidad c JOIN c.plataformas cp JOIN cp.plataforma p WHERE p.nombre = :nombre AND c.tipo = :tipo AND c.genero = :genero")
     List<ContenidoEntidad> findByPlataformaNombreAndTipoAndGenero(@Param("nombre") String nombre, @Param("tipo") TipoContenido tipo, @Param("genero") GeneroContenido genero);
+
+    // ── Filtros con plataforma + año ─────────────────────────────────────────
+
+    @Query("SELECT DISTINCT c FROM ContenidoEntidad c JOIN c.plataformas cp JOIN cp.plataforma p WHERE p.nombre = :nombre AND c.anio = :anio")
+    List<ContenidoEntidad> findByPlataformaNombreAndAnio(@Param("nombre") String nombre, @Param("anio") Integer anio); // ← NUEVO
+
+    @Query("SELECT DISTINCT c FROM ContenidoEntidad c JOIN c.plataformas cp JOIN cp.plataforma p WHERE p.nombre = :nombre AND c.anio = :anio AND c.tipo = :tipo")
+    List<ContenidoEntidad> findByPlataformaNombreAndAnioAndTipo(@Param("nombre") String nombre, @Param("anio") Integer anio, @Param("tipo") TipoContenido tipo); // ← NUEVO
+
+    @Query("SELECT DISTINCT c FROM ContenidoEntidad c JOIN c.plataformas cp JOIN cp.plataforma p WHERE p.nombre = :nombre AND c.anio = :anio AND c.genero = :genero")
+    List<ContenidoEntidad> findByPlataformaNombreAndAnioAndGenero(@Param("nombre") String nombre, @Param("anio") Integer anio, @Param("genero") GeneroContenido genero); // ← NUEVO
+
+    @Query("SELECT DISTINCT c FROM ContenidoEntidad c JOIN c.plataformas cp JOIN cp.plataforma p WHERE p.nombre = :nombre AND c.anio = :anio AND c.tipo = :tipo AND c.genero = :genero")
+    List<ContenidoEntidad> findByPlataformaNombreAndAnioAndTipoAndGenero(@Param("nombre") String nombre, @Param("anio") Integer anio, @Param("tipo") TipoContenido tipo, @Param("genero") GeneroContenido genero); // ← NUEVO
 }

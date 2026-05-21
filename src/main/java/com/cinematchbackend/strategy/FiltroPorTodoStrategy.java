@@ -16,7 +16,7 @@ public class FiltroPorTodoStrategy implements FiltroStrategy {
 
     @Override
     public boolean aplica(FiltroRequestDTO dto) {
-        return dto.getPlataforma() == null && dto.getTipo() == null && dto.getGenero() == null;
+        return dto.getPlataforma() == null && dto.getTipo() == null && dto.getGenero() == null && dto.getAnio() == null;
     }
 
     @Override

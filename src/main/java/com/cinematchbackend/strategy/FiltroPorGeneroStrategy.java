@@ -21,6 +21,9 @@ public class FiltroPorGeneroStrategy implements FiltroStrategy {
 
     @Override
     public List<ContenidoEntidad> filtrar(FiltroRequestDTO dto) {
+        if (dto.getAnio() != null) {
+            return contenidoRepository.findByAnioAndGenero(dto.getAnio(), dto.getGenero());
+        }
         return contenidoRepository.findByGenero(dto.getGenero());
     }
 }

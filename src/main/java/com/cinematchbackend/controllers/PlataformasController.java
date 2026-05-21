@@ -26,4 +26,9 @@ public class PlataformasController {
         plataformaService.actualizarEstado(dto);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{id}/en-uso")
+    public ResponseEntity<Boolean> verificarEnUso(@PathVariable Long id) {
+        return ResponseEntity.ok(plataformaService.estaEnUso(id));
+    }
 }
