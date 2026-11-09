@@ -7,10 +7,10 @@ type Usuario {
     nombre: String!
     correo: String!
     descripcion: String
-    rol: Rol!
+    rol: RolUsuario!
 }
 
-enum Rol {
+enum RolUsuario {
     USUARIO
     ADMINISTRADOR
 }
