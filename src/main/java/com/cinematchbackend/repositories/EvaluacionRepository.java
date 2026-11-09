@@ -10,4 +10,5 @@ public interface EvaluacionRepository extends JpaRepository<EvaluacionEntidad, L
     List<EvaluacionEntidad> findBySalaId(Long salaId);
     List<EvaluacionEntidad> findBySalaIdAndContenidoContenidoId(Long salaId, String contenidoId);
     Optional<EvaluacionEntidad> findBySalaIdAndUsuarioIdAndContenidoContenidoId(Long salaId, Long usuarioId, String contenidoId);
+    long countByUsuarioId(Long usuarioId);
 }

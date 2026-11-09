@@ -1,0 +1,29 @@
+# ══════════════════════════════════════════════════════════
+# USUARIO / PERFIL
+# ══════════════════════════════════════════════════════════
+
+type Usuario {
+    id: ID!
+    nombre: String!
+    correo: String!
+    descripcion: String
+    rol: RolUsuario!
+}
+
+enum RolUsuario {
+    USUARIO
+    ADMINISTRADOR
+}
+
+input PerfilInput {
+    nombre: String!
+    descripcion: String!
+}
+
+extend type Query {
+    obtenerPerfil(id: ID!): Usuario!
+}
+
+extend type Mutation {
+    actualizarPerfil(id: ID!, input: PerfilInput!): Usuario!
+}

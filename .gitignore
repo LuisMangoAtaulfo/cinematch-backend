@@ -47,3 +47,6 @@ src/main/resources/application.yml
 # ══ SISTEMA ═════════════════════════════════════════════
 .DS_Store
 Thumbs.db
+
+# ══ EQUIPO LOCAL ════════════════════════════════════════
+equipo.md

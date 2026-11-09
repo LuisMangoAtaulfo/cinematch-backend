@@ -1,0 +1,37 @@
+# ══════════════════════════════════════════════════════════
+# SALA
+# ══════════════════════════════════════════════════════════
+
+type Sala {
+    id: ID!
+    codigo: String!
+    estado: EstadoSala!
+    fechaCreacion: String!
+    usuario1: Usuario!
+    usuario2: Usuario
+}
+
+enum EstadoSala {
+    ESPERANDO
+    ACTIVA
+    FINALIZADA
+}
+
+input CrearSalaInput {
+    usuarioId: ID!
+}
+
+input UnirseSalaInput {
+    codigo: String!
+    usuarioId: ID!
+}
+
+extend type Query {
+    obtenerSala(id: ID!): Sala!
+}
+
+extend type Mutation {
+    crearSala(input: CrearSalaInput!): Sala!
+    unirseASala(input: UnirseSalaInput!): Sala!
+    finalizarSala(id: ID!): Boolean!
+}

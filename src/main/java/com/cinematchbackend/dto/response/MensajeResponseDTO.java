@@ -11,4 +11,5 @@ public class MensajeResponseDTO {
     private LocalDateTime fechaEnvio;
     private Long usuarioId;
     private String nombreUsuario;
+    private Long salaId;
 }

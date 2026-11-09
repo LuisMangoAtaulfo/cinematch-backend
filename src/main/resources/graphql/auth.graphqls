@@ -1,0 +1,28 @@
+# ══════════════════════════════════════════════════════════
+# AUTH
+# ══════════════════════════════════════════════════════════
+
+type AuthPayload {
+    token: String!
+    nombre: String
+    correo: String!
+}
+
+input LoginInput {
+    correo: String!
+    password: String!
+}
+
+input RegistroInput {
+    nombre: String!
+    correo: String!
+    password: String!
+}
+
+extend type Mutation {
+    login(input: LoginInput!): AuthPayload!
+    registrar(input: RegistroInput!): AuthPayload!
+    loginAdmin(input: LoginInput!): AuthPayload!
+    logout: Boolean!
+    logoutAdmin: Boolean!
+}

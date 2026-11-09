@@ -2,8 +2,10 @@ package com.cinematchbackend.services.impl;
 
 import com.cinematchbackend.dto.response.MetricasHistorialResponseDTO;
 import com.cinematchbackend.dto.response.MetricasResponseDTO;
+import com.cinematchbackend.dto.response.MetricasUsuarioResponseDTO;
 import com.cinematchbackend.enums.EstadoSala;
 import com.cinematchbackend.repositories.CalificacionRepository;
+import com.cinematchbackend.repositories.EvaluacionRepository;
 import com.cinematchbackend.repositories.MatchRepository;
 import com.cinematchbackend.repositories.SalaRepository;
 import com.cinematchbackend.services.interfaces.MetricasService;
@@ -22,6 +24,7 @@ public class MetricasServiceImpl implements MetricasService {
     private final SalaRepository salaRepository;
     private final MatchRepository matchRepository;
     private final CalificacionRepository calificacionRepository;
+    private final EvaluacionRepository evaluacionRepository;
 
     @Override
     public MetricasResponseDTO procesarMetricas() {
@@ -44,6 +47,29 @@ public class MetricasServiceImpl implements MetricasService {
                 .toList();
     }
 
+    @Override
+    public MetricasUsuarioResponseDTO procesarMetricasUsuario(Long usuarioId) {
+        MetricasUsuarioResponseDTO dto = new MetricasUsuarioResponseDTO();
+        dto.setTotalSalas(salaRepository.findAllByUsuario(usuarioId).stream().count());
+        dto.setSalasActivas(salaRepository.countByEstadoAndUsuario(EstadoSala.ACTIVA, usuarioId));
+        dto.setTotalMatches(matchRepository.countByUsuario(usuarioId));
+        Double promedio = calificacionRepository.calcularPromedioByUsuario(usuarioId);
+        dto.setPromedioCalificacion(promedio != null ? promedio : 0.0);
+        dto.setTotalEvaluaciones(evaluacionRepository.countByUsuarioId(usuarioId));
+        return dto;
+    }
+
+    @Override
+    public List<MetricasHistorialResponseDTO> obtenerHistorialUsuario(Long usuarioId) {
+        return salaRepository.findAllFechasCreacionByUsuario(usuarioId)
+                .stream()
+                .map(LocalDateTime::toLocalDate)
+                .distinct()
+                .sorted()
+                .map(date -> buildHistorialUsuarioForDate(usuarioId, date))
+                .toList();
+    }
+
     private MetricasHistorialResponseDTO buildHistorialForDate(LocalDate date) {
         LocalDateTime inicio = date.atStartOfDay();
         LocalDateTime fin = date.atTime(LocalTime.MAX);
@@ -59,6 +85,28 @@ public class MetricasServiceImpl implements MetricasService {
                 salaRepository.countByEstadoAndFechaCreacionBetween(EstadoSala.ACTIVA, inicio, fin));
         dto.setTotalMatches(
                 matchRepository.countBySalaFechaCreacionBetween(inicio, fin));
+        dto.setPromedioCalificacion(promedio != null ? promedio : 0.0);
+        return dto;
+    }
+
+    private MetricasHistorialResponseDTO buildHistorialUsuarioForDate(Long usuarioId, LocalDate date) {
+        LocalDateTime inicio = date.atStartOfDay();
+        LocalDateTime fin = date.atTime(LocalTime.MAX);
+
+        Double promedio = calificacionRepository
+                .calcularPromedioByUsuarioAndFechaCreacionBetween(usuarioId, inicio, fin);
+
+        MetricasHistorialResponseDTO dto = new MetricasHistorialResponseDTO();
+        dto.setFecha(inicio);
+        dto.setTotalSalas(
+                (long) salaRepository.findByUsuarioAndFechaCreacionBetween(usuarioId, inicio, fin).size());
+        dto.setSalasActivas(
+                salaRepository.findByUsuarioAndFechaCreacionBetween(usuarioId, inicio, fin)
+                        .stream()
+                        .filter(s -> s.getEstado() == EstadoSala.ACTIVA)
+                        .count());
+        dto.setTotalMatches(
+                matchRepository.countByUsuarioAndFechaCreacionBetween(usuarioId, inicio, fin));
         dto.setPromedioCalificacion(promedio != null ? promedio : 0.0);
         return dto;
     }

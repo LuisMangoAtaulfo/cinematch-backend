@@ -1,0 +1,40 @@
+# ══════════════════════════════════════════════════════════
+# METRICAS (admin)
+# ══════════════════════════════════════════════════════════
+
+type Metricas {
+    totalSalas: Int!
+    salasActivas: Int!
+    totalMatches: Int!
+    promedioCalificacion: Float!
+}
+
+type MetricasDia {
+    fecha: String!
+    totalSalas: Int!
+    salasActivas: Int!
+    totalMatches: Int!
+    promedioCalificacion: Float
+}
+
+extend type Query {
+    metricas: Metricas!
+    historialMetricas: [MetricasDia!]!
+}
+
+# ══════════════════════════════════════════════════════════
+# METRICAS DE USUARIO (vista personal)
+# ══════════════════════════════════════════════════════════
+
+type MetricasUsuario {
+    totalSalas: Int!
+    salasActivas: Int!
+    totalMatches: Int!
+    promedioCalificacion: Float!
+    totalEvaluaciones: Int!
+}
+
+extend type Query {
+    metricasUsuario(id: ID!): MetricasUsuario!
+    historialMetricasUsuario(id: ID!): [MetricasDia!]!
+}

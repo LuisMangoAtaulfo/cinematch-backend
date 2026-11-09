@@ -1,0 +1,18 @@
+# ══════════════════════════════════════════════════════════
+# EVALUACIONES
+# ══════════════════════════════════════════════════════════
+
+input EvaluacionInput {
+    salaId: ID!
+    usuarioId: ID!
+    contenidoId: String!
+    decision: Boolean!
+}
+
+extend type Query {
+    compararEvaluaciones(salaId: ID!, contenidoId: String!): Boolean!
+}
+
+extend type Mutation {
+    evaluarContenido(input: EvaluacionInput!): Boolean!
+}

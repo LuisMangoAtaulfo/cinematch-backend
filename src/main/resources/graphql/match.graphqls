@@ -1,0 +1,14 @@
+# ══════════════════════════════════════════════════════════
+# MATCHES
+# ══════════════════════════════════════════════════════════
+
+type Match {
+    id: ID!
+    fechaDeteccion: String!
+    contenido: Contenido
+}
+
+extend type Query {
+    buscarMatches(salaId: ID!): [Match!]!
+    obtenerMatchesSala(id: ID!): [Match!]!
+}

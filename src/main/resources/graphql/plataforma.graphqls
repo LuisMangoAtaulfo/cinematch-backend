@@ -1,0 +1,23 @@
+# ══════════════════════════════════════════════════════════
+# PLATAFORMAS
+# ══════════════════════════════════════════════════════════
+
+type Plataforma {
+    id: ID!
+    nombre: String!
+    habilitada: Boolean!
+}
+
+input PlataformaEstadoInput {
+    id: ID!
+    habilitada: Boolean!
+}
+
+extend type Query {
+    plataformas: [Plataforma!]!
+    plataformaEnUso(id: ID!): Boolean!
+}
+
+extend type Mutation {
+    cambiarEstadoPlataforma(input: PlataformaEstadoInput!): Boolean!
+}

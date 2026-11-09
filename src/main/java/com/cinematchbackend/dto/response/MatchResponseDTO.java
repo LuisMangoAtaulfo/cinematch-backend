@@ -9,4 +9,5 @@ public class MatchResponseDTO {
     private Long id;
     private LocalDateTime fechaDeteccion;
     private ContenidoResponseDTO contenido;
+    private Long salaId;
 }

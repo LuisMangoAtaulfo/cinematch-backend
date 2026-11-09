@@ -16,6 +16,7 @@ import com.cinematchbackend.repositories.MatchRepository;
 import com.cinematchbackend.repositories.MensajeRepository;
 import com.cinematchbackend.repositories.SalaRepository;
 import com.cinematchbackend.repositories.UsuarioRepository;
+import com.cinematchbackend.services.interfaces.EventPublisherService;
 import com.cinematchbackend.services.interfaces.SalaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class SalaServiceImpl implements SalaService {
     private final MatchRepository matchRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final MensajeRepository mensajeRepository;
+    private final EventPublisherService eventPublisherService;
 
     @Override
     public SalaResponseDTO crearSala(SalaRequestDTO dto) {
@@ -88,6 +90,8 @@ public class SalaServiceImpl implements SalaService {
                 true
         );
 
+        eventPublisherService.publicarSalaFinalizada(salaId);
+
         mensajeRepository.deleteBySalaId(salaId); // ← aquí
     }
 
@@ -105,6 +109,7 @@ public class SalaServiceImpl implements SalaService {
                     MatchResponseDTO dto = new MatchResponseDTO();
                     dto.setId(match.getId());
                     dto.setFechaDeteccion(match.getFechaDeteccion());
+                    dto.setSalaId(salaId);
                     return dto;
                 }).toList();
     }

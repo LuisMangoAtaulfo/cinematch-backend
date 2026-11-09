@@ -10,6 +10,7 @@ import com.cinematchbackend.exceptions.SalaNoEncontradaException;
 import com.cinematchbackend.repositories.ContenidoRepository;
 import com.cinematchbackend.repositories.MatchRepository;
 import com.cinematchbackend.repositories.SalaRepository;
+import com.cinematchbackend.services.interfaces.EventPublisherService;
 import com.cinematchbackend.services.interfaces.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class MatchServiceImpl implements MatchService {
     private final MatchRepository matchRepository;
     private final SalaRepository salaRepository;
     private final ContenidoRepository contenidoRepository;
+    private final EventPublisherService eventPublisherService;
 
     @Override
     public List<MatchResponseDTO> buscarMatches(Long salaId) {
@@ -40,7 +42,12 @@ public class MatchServiceImpl implements MatchService {
         MatchEntidad match = new MatchEntidad();
         match.setSala(sala);
         match.setContenido(contenido);
-        return matchRepository.save(match);
+        MatchEntidad saved = matchRepository.save(match);
+
+        MatchResponseDTO response = mapearAResponse(saved);
+        eventPublisherService.publicarMatch(salaId, response);
+
+        return saved;
     }
 
     private MatchResponseDTO mapearAResponse(MatchEntidad match) {
@@ -48,6 +55,7 @@ public class MatchServiceImpl implements MatchService {
         dto.setId(match.getId());
         dto.setFechaDeteccion(match.getFechaDeteccion());
         dto.setContenido(mapearContenido(match.getContenido()));
+        dto.setSalaId(match.getSala().getId());
         return dto;
     }
 

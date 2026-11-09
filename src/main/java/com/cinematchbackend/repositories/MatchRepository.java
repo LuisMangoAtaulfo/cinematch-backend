@@ -13,4 +13,12 @@ public interface MatchRepository extends JpaRepository<MatchEntidad, Long> {
     @Query("SELECT COUNT(m) FROM MatchEntidad m WHERE m.sala.fechaCreacion BETWEEN :inicio AND :fin")
     long countBySalaFechaCreacionBetween(@Param("inicio") LocalDateTime inicio,
                                          @Param("fin") LocalDateTime fin);
+
+    @Query("SELECT COUNT(m) FROM MatchEntidad m WHERE m.sala.usuario1.id = :usuarioId OR m.sala.usuario2.id = :usuarioId")
+    long countByUsuario(@Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT COUNT(m) FROM MatchEntidad m WHERE (m.sala.usuario1.id = :usuarioId OR m.sala.usuario2.id = :usuarioId) AND m.sala.fechaCreacion BETWEEN :inicio AND :fin")
+    long countByUsuarioAndFechaCreacionBetween(@Param("usuarioId") Long usuarioId,
+                                               @Param("inicio") LocalDateTime inicio,
+                                               @Param("fin") LocalDateTime fin);
 }
