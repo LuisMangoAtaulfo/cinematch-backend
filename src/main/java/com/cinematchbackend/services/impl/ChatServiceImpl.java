@@ -11,6 +11,7 @@ import com.cinematchbackend.repositories.MensajeRepository;
 import com.cinematchbackend.repositories.SalaRepository;
 import com.cinematchbackend.repositories.UsuarioRepository;
 import com.cinematchbackend.services.interfaces.ChatService;
+import com.cinematchbackend.services.interfaces.EventPublisherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class ChatServiceImpl implements ChatService {
     private final MensajeRepository mensajeRepository;
     private final SalaRepository salaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final EventPublisherService eventPublisherService;
 
     @Override
     public MensajeResponseDTO procesarMensaje(MensajeRequestDTO dto) {
@@ -34,7 +36,11 @@ public class ChatServiceImpl implements ChatService {
         mensaje.setSala(sala);
         mensaje.setUsuario(usuario);
         mensaje.setTexto(dto.getTexto());
-        return mapearAResponse(mensajeRepository.save(mensaje));
+        MensajeResponseDTO response = mapearAResponse(mensajeRepository.save(mensaje));
+
+        eventPublisherService.publicarMensaje(dto.getSalaId(), response);
+
+        return response;
     }
 
     @Override
@@ -51,6 +57,7 @@ public class ChatServiceImpl implements ChatService {
         dto.setFechaEnvio(mensaje.getFechaEnvio());
         dto.setUsuarioId(mensaje.getUsuario().getId());
         dto.setNombreUsuario(mensaje.getUsuario().getNombre());
+        dto.setSalaId(mensaje.getSala().getId());
         return dto;
     }
 }
