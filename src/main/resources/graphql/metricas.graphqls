@@ -1,0 +1,23 @@
+# ══════════════════════════════════════════════════════════
+# METRICAS (admin)
+# ══════════════════════════════════════════════════════════
+
+type Metricas {
+    totalSalas: Int!
+    salasActivas: Int!
+    totalMatches: Int!
+    promedioCalificacion: Float!
+}
+
+type MetricasDia {
+    fecha: String!
+    totalSalas: Int!
+    salasActivas: Int!
+    totalMatches: Int!
+    promedioCalificacion: Float
+}
+
+extend type Query {
+    metricas: Metricas!
+    historialMetricas: [MetricasDia!]!
+}

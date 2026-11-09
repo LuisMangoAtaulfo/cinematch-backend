@@ -1,0 +1,19 @@
+# ══════════════════════════════════════════════════════════
+# FILTROS
+# ══════════════════════════════════════════════════════════
+
+input FiltroInput {
+    salaId: ID!
+    tipo: TipoContenido
+    genero: GeneroContenido
+    plataforma: String
+    anio: Int
+}
+
+extend type Query {
+    contenidoPorSala(salaId: ID!): [Contenido!]
+}
+
+extend type Mutation {
+    aplicarFiltros(input: FiltroInput!): [Contenido!]!
+}

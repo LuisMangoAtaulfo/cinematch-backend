@@ -1,0 +1,35 @@
+# ══════════════════════════════════════════════════════════
+# CONTENIDO
+# ══════════════════════════════════════════════════════════
+
+type Contenido {
+    contenidoId: String!
+    titulo: String!
+    anio: Int!
+    tipo: TipoContenido!
+    genero: String!
+    imagen: String!
+    plataformas: [String!]!
+}
+
+enum TipoContenido {
+    PELICULA
+    SERIE
+}
+
+enum GeneroContenido {
+    ACCION
+    AVENTURA
+    ANIMACION
+    COMEDIA
+    CRIMEN
+    DOCUMENTAL
+    DRAMA
+    FANTASIA
+    HORROR
+    MISTERIO
+    ROMANCE
+    CIENCIA_FICCION
+    THRILLER
+    WESTERN
+}

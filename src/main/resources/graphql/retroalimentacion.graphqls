@@ -1,0 +1,8 @@
+# ══════════════════════════════════════════════════════════
+# RETROALIMENTACION (admin)
+# ══════════════════════════════════════════════════════════
+
+extend type Query {
+    retroalimentacion: [Calificacion!]!
+    promedioCalificacion: Float!
+}

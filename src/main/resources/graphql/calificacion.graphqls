@@ -1,0 +1,21 @@
+# ══════════════════════════════════════════════════════════
+# CALIFICACIONES
+# ══════════════════════════════════════════════════════════
+
+type Calificacion {
+    id: ID!
+    valor: Int!
+    fecha: String!
+    usuarioId: ID!
+    salaId: ID!
+}
+
+input CalificacionInput {
+    salaId: ID!
+    usuarioId: ID!
+    valor: Int!
+}
+
+extend type Mutation {
+    registrarCalificacion(input: CalificacionInput!): Boolean!
+}

@@ -1,0 +1,31 @@
+# ══════════════════════════════════════════════════════════
+# CHAT / MENSAJES
+# ══════════════════════════════════════════════════════════
+
+type Mensaje {
+    id: ID!
+    texto: String!
+    fechaEnvio: String!
+    usuarioId: ID!
+    nombreUsuario: String!
+}
+
+input MensajeInput {
+    salaId: ID!
+    usuarioId: ID!
+    texto: String!
+}
+
+extend type Query {
+    historialChat(salaId: ID!): [Mensaje!]!
+}
+
+extend type Mutation {
+    enviarMensaje(input: MensajeInput!): Mensaje!
+}
+
+extend type Subscription {
+    mensajeRecibido(salaId: ID!): Mensaje!
+    matchDetectado(salaId: ID!): Match!
+    salaFinalizada(salaId: ID!): Boolean!
+}

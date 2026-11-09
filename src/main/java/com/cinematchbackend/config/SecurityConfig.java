@@ -33,6 +33,8 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/graphql").permitAll()
+                        .requestMatchers("/graphiql").permitAll()
                         .requestMatchers("/api/metricas/**").hasRole("ADMINISTRADOR")
                         .requestMatchers("/api/retroalimentacion/**").hasRole("ADMINISTRADOR")
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/plataformas").authenticated()
