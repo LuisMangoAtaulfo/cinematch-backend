@@ -1,7 +1,9 @@
 package com.cinematchbackend.config;
 
-import com.cinematchbackend.dto.response.PresenciaDTO;
+import com.cinematchbackend.dto.response.EstadoCompaneroDTO;
 import com.cinematchbackend.repositories.UsuarioRepository;
+import com.cinematchbackend.services.interfaces.ConexionService;
+import com.cinematchbackend.services.interfaces.EventPublisherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
@@ -18,11 +20,17 @@ public class PresenciaEventListener {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final UsuarioRepository usuarioRepository;
+    private final EventPublisherService eventPublisherService;
+    private final ConexionService conexionService;
 
     public PresenciaEventListener(@Lazy SimpMessagingTemplate messagingTemplate,
-                                  UsuarioRepository usuarioRepository) {
+                                   UsuarioRepository usuarioRepository,
+                                   EventPublisherService eventPublisherService,
+                                   ConexionService conexionService) {
         this.messagingTemplate = messagingTemplate;
         this.usuarioRepository = usuarioRepository;
+        this.eventPublisherService = eventPublisherService;
+        this.conexionService = conexionService;
     }
 
     @EventListener
@@ -37,13 +45,22 @@ public class PresenciaEventListener {
 
         if (salaId == null || usuarioId == null) return;
 
+        // Registrar desconexion en el servicio de conexión
+        conexionService.registrarDesconexion(salaId, usuarioId);
+
         usuarioRepository.findById(usuarioId).ifPresent(usuario -> {
-            PresenciaDTO dto = new PresenciaDTO();
+            EstadoCompaneroDTO dto = new EstadoCompaneroDTO();
             dto.setUsuarioId(usuarioId);
             dto.setEstado("DESCONECTADO");
             dto.setNombreUsuario(usuario.getNombre());
+
+            // STOMP WebSocket (legacy)
             messagingTemplate.convertAndSend(
                     "/topic/sala/" + salaId + "/presencia", dto);
+
+            // GraphQL Subscription (R-BE-03)
+            eventPublisherService.publicarEstadoCompanero(salaId, dto);
+
             log.info("Usuario {} desconectado de sala {}", usuarioId, salaId);
         });
     }

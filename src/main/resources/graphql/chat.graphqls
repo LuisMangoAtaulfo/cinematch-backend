@@ -10,6 +10,20 @@ type Mensaje {
     nombreUsuario: String!
 }
 
+type EstadoCompanero {
+    usuarioId: ID!
+    estado: String!
+    nombreUsuario: String!
+}
+
+type EvaluacionRecibida {
+    salaId: ID!
+    usuarioId: ID!
+    contenidoId: String!
+    decision: Boolean!
+    nombreUsuario: String!
+}
+
 input MensajeInput {
     salaId: ID!
     usuarioId: ID!
@@ -28,4 +42,6 @@ extend type Subscription {
     mensajeRecibido(salaId: ID!): Mensaje!
     matchDetectado(salaId: ID!): Match!
     salaFinalizada(salaId: ID!): Boolean!
+    estadoCompanero(salaId: ID!): EstadoCompanero!
+    evaluacionRecibida(salaId: ID!): EvaluacionRecibida!
 }

@@ -22,6 +22,7 @@ input PerfilInput {
 
 extend type Query {
     obtenerPerfil(id: ID!): Usuario!
+    miPerfil: Usuario!
 }
 
 extend type Mutation {

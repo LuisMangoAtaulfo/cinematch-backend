@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface MatchService {
     List<MatchResponseDTO> buscarMatches(Long salaId);
+    List<MatchResponseDTO> obtenerMatchesUsuario(Long usuarioId);
     MatchEntidad registrarMatch(Long salaId, String contenidoId);
 }

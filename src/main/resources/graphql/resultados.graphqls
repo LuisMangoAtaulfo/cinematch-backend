@@ -1,0 +1,15 @@
+# ══════════════════════════════════════════════════════════
+# RESULTADOS (post-sesión)
+# ══════════════════════════════════════════════════════════
+
+type ResultadoSala {
+    salaId: ID!
+    matches: [Match!]!
+    totalMatches: Int!
+    totalEvaluaciones: Int!
+    totalMensajes: Int!
+}
+
+extend type Query {
+    obtenerResultados(salaId: ID!): ResultadoSala!
+}

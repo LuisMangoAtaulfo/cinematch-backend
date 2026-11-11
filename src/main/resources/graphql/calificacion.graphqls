@@ -18,4 +18,5 @@ input CalificacionInput {
 
 extend type Mutation {
     registrarCalificacion(input: CalificacionInput!): Boolean!
+    calificarExperiencia(input: CalificacionInput!): Boolean!
 }

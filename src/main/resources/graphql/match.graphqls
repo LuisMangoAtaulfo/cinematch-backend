@@ -11,4 +11,5 @@ type Match {
 extend type Query {
     buscarMatches(salaId: ID!): [Match!]!
     obtenerMatchesSala(id: ID!): [Match!]!
+    obtenerMatchesUsuario(usuarioId: ID!): [Match!]!
 }

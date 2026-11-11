@@ -5,14 +5,11 @@ import com.cinematchbackend.services.interfaces.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
-/**
- * Resolver GraphQL para queries de matches.
- * Optimizado para usar un solo service y evitar duplicación de lógica.
- */
 @Controller
 @RequiredArgsConstructor
 public class MatchGraphQLController {
@@ -26,7 +23,12 @@ public class MatchGraphQLController {
 
     @QueryMapping
     public List<MatchResponseDTO> obtenerMatchesSala(@Argument Long id) {
-        // Reutiliza el mismo método para evitar duplicación
         return matchService.buscarMatches(id);
+    }
+
+    @QueryMapping
+    @PreAuthorize("isAuthenticated()")
+    public List<MatchResponseDTO> obtenerMatchesUsuario(@Argument Long usuarioId) {
+        return matchService.obtenerMatchesUsuario(usuarioId);
     }
 }

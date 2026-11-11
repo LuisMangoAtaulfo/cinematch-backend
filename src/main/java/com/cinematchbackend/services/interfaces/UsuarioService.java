@@ -13,4 +13,5 @@ public interface UsuarioService {
     UsuarioResponseDTO actualizarPerfil(Long id, PerfilUpdateDTO dto);
     String obtenerNombreUsuarioLogeado(String correo);
     UsuarioResponseDTO obtenerDatosUsuarioLogeado(Long id);
+    UsuarioResponseDTO obtenerDatosUsuarioPorCorreo(String correo);
 }

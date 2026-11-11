@@ -53,7 +53,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200","https://cinematch.mangosystem.org"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:4200",
+                "https://cinematch.mango-ataulfo.com",
+                "https://cinematch-frontend.pages.dev",
+                "https://mango-ataulfo.com",
+                "https://www.mango-ataulfo.com"
+        ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

@@ -12,9 +12,11 @@ type Sala {
 }
 
 enum EstadoSala {
+    CREADA
     ESPERANDO
     ACTIVA
     FINALIZADA
+    CANCELADA
 }
 
 input CrearSalaInput {
@@ -28,10 +30,36 @@ input UnirseSalaInput {
 
 extend type Query {
     obtenerSala(id: ID!): Sala!
+    buscarSalaPorCodigo(codigo: String!): Sala!
+    obtenerEstadoSala(salaId: ID!): EstadoSalaCompleta!
+}
+
+type EstadoSalaCompleta {
+    salaId: ID!
+    codigo: String!
+    estado: EstadoSala!
+    estadosUsuarios: [EstadoConexion!]!
+}
+
+type EstadoConexion {
+    usuarioId: ID!
+    conectado: Boolean!
+    nombreUsuario: String!
 }
 
 extend type Mutation {
     crearSala(input: CrearSalaInput!): Sala!
     unirseASala(input: UnirseSalaInput!): Sala!
-    finalizarSala(id: ID!): Boolean!
+    finalizarSala(id: ID!, usuarioId: ID!): Boolean!
+    cancelarSala(id: ID!, usuarioId: ID!): Boolean!
+}
+
+extend type Subscription {
+    cambiosSala(salaId: ID!): CambioSala!
+}
+
+type CambioSala {
+    salaId: ID!
+    estado: EstadoSala!
+    mensaje: String!
 }

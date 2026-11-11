@@ -14,5 +14,6 @@ public class ContenidoResponseDTO {
     private TipoContenido tipo;
     private GeneroContenido genero;
     private String imagen;
+    private String sinopsis;
     private List<String> plataformas;
 }

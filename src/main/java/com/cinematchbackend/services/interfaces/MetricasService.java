@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface MetricasService {
     MetricasResponseDTO procesarMetricas();
+    MetricasResponseDTO procesarMetricas(String desde, String hasta);
     List<MetricasHistorialResponseDTO> obtenerHistorial();
 }

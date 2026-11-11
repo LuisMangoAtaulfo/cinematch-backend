@@ -13,11 +13,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MetricasServiceImpl implements MetricasService {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
     private final SalaRepository salaRepository;
     private final MatchRepository matchRepository;
@@ -30,6 +33,40 @@ public class MetricasServiceImpl implements MetricasService {
         dto.setSalasActivas(salaRepository.countByEstado(EstadoSala.ACTIVA));
         dto.setTotalMatches(matchRepository.count());
         dto.setPromedioCalificacion(calificacionRepository.calcularPromedio());
+        dto.setFiltroActivo(false);
+        return dto;
+    }
+
+    /**
+     * R-BE-04: Métricas con filtros de fecha opcionales.
+     */
+    @Override
+    public MetricasResponseDTO procesarMetricas(String desde, String hasta) {
+        boolean hayFiltros = (desde != null && !desde.isBlank())
+                           || (hasta != null && !hasta.isBlank());
+
+        // Sin filtros: retornar todo
+        if (!hayFiltros) {
+            return procesarMetricas();
+        }
+
+        LocalDateTime inicio = (desde != null && !desde.isBlank())
+                ? LocalDate.parse(desde, FORMATTER).atStartOfDay()
+                : null;
+        LocalDateTime fin = (hasta != null && !hasta.isBlank())
+                ? LocalDate.parse(hasta, FORMATTER).atTime(LocalTime.MAX)
+                : null;
+
+        MetricasResponseDTO dto = new MetricasResponseDTO();
+        dto.setTotalSalas(salaRepository.countByFechaCreacionFiltrado(inicio, fin));
+        dto.setSalasActivas(salaRepository.countByEstadoAndFechaCreacionFiltrado(EstadoSala.ACTIVA, inicio, fin));
+        dto.setTotalMatches(matchRepository.countByFechaCreacionSalaFiltrado(inicio, fin));
+
+        Double promedio = (inicio != null && fin != null)
+                ? calificacionRepository.calcularPromedioByFechaBetween(inicio, fin)
+                : calificacionRepository.calcularPromedio();
+        dto.setPromedioCalificacion(promedio != null ? promedio : 0.0);
+        dto.setFiltroActivo(true);
         return dto;
     }
 

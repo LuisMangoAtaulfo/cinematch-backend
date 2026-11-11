@@ -1,7 +1,10 @@
 package com.cinematchbackend.config;
 
+import com.cinematchbackend.dto.response.EstadoCompaneroDTO;
 import com.cinematchbackend.dto.response.PresenciaDTO;
 import com.cinematchbackend.repositories.UsuarioRepository;
+import com.cinematchbackend.services.interfaces.ConexionService;
+import com.cinematchbackend.services.interfaces.EventPublisherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
@@ -20,11 +23,17 @@ public class PresenciaInterceptor implements ChannelInterceptor {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final UsuarioRepository usuarioRepository;
+    private final EventPublisherService eventPublisherService;
+    private final ConexionService conexionService;
 
     public PresenciaInterceptor(@Lazy SimpMessagingTemplate messagingTemplate,
-                                UsuarioRepository usuarioRepository) {
+                                 UsuarioRepository usuarioRepository,
+                                 EventPublisherService eventPublisherService,
+                                 ConexionService conexionService) {
         this.messagingTemplate = messagingTemplate;
         this.usuarioRepository = usuarioRepository;
+        this.eventPublisherService = eventPublisherService;
+        this.conexionService = conexionService;
     }
 
     @Override
@@ -67,13 +76,24 @@ public class PresenciaInterceptor implements ChannelInterceptor {
         sessionAttributes.put("salaId", salaId);
         sessionAttributes.put("usuarioId", usuarioId);
 
+        // Registrar conexión
+        conexionService.registrarConexion(salaId, usuarioId);
+
         usuarioRepository.findById(usuarioId).ifPresent(usuario -> {
+            // STOMP WebSocket (legacy)
             PresenciaDTO dto = new PresenciaDTO();
             dto.setUsuarioId(usuarioId);
             dto.setEstado("CONECTADO");
             dto.setNombreUsuario(usuario.getNombre());
             messagingTemplate.convertAndSend(
                     "/topic/sala/" + salaId + "/presencia", dto);
+
+            // GraphQL Subscription (R-BE-03)
+            EstadoCompaneroDTO gqlDto = new EstadoCompaneroDTO();
+            gqlDto.setUsuarioId(usuarioId);
+            gqlDto.setEstado("CONECTADO");
+            gqlDto.setNombreUsuario(usuario.getNombre());
+            eventPublisherService.publicarEstadoCompanero(salaId, gqlDto);
         });
 
         return message;

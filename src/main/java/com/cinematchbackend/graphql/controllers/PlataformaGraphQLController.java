@@ -26,6 +26,11 @@ public class PlataformaGraphQLController {
     }
 
     @QueryMapping
+    public List<PlataformaResponseDTO> plataformasHabilitadas() {
+        return plataformaService.listarPlataformasHabilitadas();
+    }
+
+    @QueryMapping
     public Boolean plataformaEnUso(@Argument Long id) {
         return plataformaService.estaEnUso(id);
     }

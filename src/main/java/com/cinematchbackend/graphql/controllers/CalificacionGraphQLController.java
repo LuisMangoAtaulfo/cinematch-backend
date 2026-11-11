@@ -23,4 +23,13 @@ public class CalificacionGraphQLController {
         log.info("Calificación registrada para sala {} por usuario {}", input.getSalaId(), input.getUsuarioId());
         return true;
     }
+
+    @MutationMapping
+    @PreAuthorize("isAuthenticated()")
+    public Boolean calificarExperiencia(@Argument CalificacionRequestDTO input) {
+        calificacionService.calificarExperiencia(input);
+        log.info("Experiencia calificada para sala {} por usuario {} con valor {}",
+                input.getSalaId(), input.getUsuarioId(), input.getValor());
+        return true;
+    }
 }

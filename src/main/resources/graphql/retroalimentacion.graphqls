@@ -2,7 +2,16 @@
 # RETROALIMENTACION (admin)
 # ══════════════════════════════════════════════════════════
 
+type RetroalimentacionCompleta {
+    promedio: Float!
+    distribucion: [Int!]!
+    totalCalificaciones: Int!
+    calificaciones: [Calificacion!]!
+    filtroActivo: Boolean!
+}
+
 extend type Query {
     retroalimentacion: [Calificacion!]!
     promedioCalificacion: Float!
+    obtenerRetroalimentacion(desde: String, hasta: String): RetroalimentacionCompleta!
 }

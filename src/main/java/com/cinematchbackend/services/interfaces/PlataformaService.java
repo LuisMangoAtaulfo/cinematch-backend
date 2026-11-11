@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface PlataformaService {
     List<PlataformaResponseDTO> listarPlataformas();
+    List<PlataformaResponseDTO> listarPlataformasHabilitadas();
+    List<Integer> obtenerAniosDisponibles();
     void actualizarEstado(PlataformaUpdateDTO dto);
     boolean estaEnUso(Long id);
-
 }

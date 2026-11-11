@@ -9,12 +9,14 @@ type Contenido {
     tipo: TipoContenido!
     genero: String!
     imagen: String!
+    sinopsis: String
     plataformas: [String!]!
 }
 
 enum TipoContenido {
     PELICULA
     SERIE
+    DOCUMENTAL
 }
 
 enum GeneroContenido {

@@ -2,6 +2,11 @@
 # FILTROS
 # ══════════════════════════════════════════════════════════
 
+type FiltroResultado {
+    contenidos: [Contenido!]!
+    totalResultados: Int!
+}
+
 input FiltroInput {
     salaId: ID!
     tipo: TipoContenido
@@ -10,8 +15,23 @@ input FiltroInput {
     anio: Int
 }
 
+input FiltroPublicoInput {
+    tipo: TipoContenido
+    genero: GeneroContenido
+    plataforma: String
+    plataformaId: ID
+    anio: Int
+    orderBy: String
+    limit: Int
+    offset: Int
+}
+
 extend type Query {
     contenidoPorSala(salaId: ID!): [Contenido!]
+    contenidoFiltrado(input: FiltroInput!): FiltroResultado!
+    contenidosFiltrados(input: FiltroPublicoInput!): FiltroResultado!
+    generosDisponibles: [String!]!
+    aniosDisponibles: [Int!]!
 }
 
 extend type Mutation {

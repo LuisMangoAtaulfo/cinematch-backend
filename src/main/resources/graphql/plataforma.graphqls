@@ -15,6 +15,7 @@ input PlataformaEstadoInput {
 
 extend type Query {
     plataformas: [Plataforma!]!
+    plataformasHabilitadas: [Plataforma!]!
     plataformaEnUso(id: ID!): Boolean!
 }
 
