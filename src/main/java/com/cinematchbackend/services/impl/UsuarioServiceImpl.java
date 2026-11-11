@@ -96,5 +96,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         return mapearAResponse(usuario);
     }
 
+    @Override
+    public UsuarioResponseDTO obtenerDatosUsuarioPorCorreo(String correo) {
+        UsuarioEntidad usuario = usuarioRepository.findByCorreo(correo)
+            .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + correo));
+        return mapearAResponse(usuario);
+    }
+
 
 }

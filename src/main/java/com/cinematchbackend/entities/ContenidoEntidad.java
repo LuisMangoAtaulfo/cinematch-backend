@@ -31,6 +31,9 @@ public class ContenidoEntidad {
 
     private String imagen;
 
+    @Column(length = 2000)
+    private String sinopsis;
+
     @OneToMany(mappedBy = "contenido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContenidoPlataformaEntidad> plataformas = new ArrayList<>();
 }

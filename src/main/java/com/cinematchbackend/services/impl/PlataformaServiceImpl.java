@@ -5,6 +5,7 @@ import com.cinematchbackend.dto.response.PlataformaResponseDTO;
 import com.cinematchbackend.entities.PlataformaEntidad;
 import com.cinematchbackend.exceptions.PlataformaNoEncontradaException;
 import com.cinematchbackend.repositories.ContenidoPlataformaRepository;
+import com.cinematchbackend.repositories.ContenidoRepository;
 import com.cinematchbackend.repositories.PlataformaRepository;
 import com.cinematchbackend.services.interfaces.PlataformaService;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,30 @@ import java.util.List;
 public class PlataformaServiceImpl implements PlataformaService {
 
     private final PlataformaRepository plataformaRepository;
-    private final ContenidoPlataformaRepository contenidoPlataformaRepository; // ← NUEVO
+    private final ContenidoPlataformaRepository contenidoPlataformaRepository;
+    private final ContenidoRepository contenidoRepository;
 
     @Override
     public List<PlataformaResponseDTO> listarPlataformas() {
         return plataformaRepository.findAll().stream()
                 .map(this::mapearAResponse)
+                .toList();
+    }
+
+    @Override
+    public List<PlataformaResponseDTO> listarPlataformasHabilitadas() {
+        return plataformaRepository.findByHabilitadaTrue().stream()
+                .map(this::mapearAResponse)
+                .toList();
+    }
+
+    @Override
+    public List<Integer> obtenerAniosDisponibles() {
+        return contenidoRepository.findAll().stream()
+                .map(c -> c.getAnio())
+                .filter(a -> a != null && a >= 1980)
+                .distinct()
+                .sorted((a, b) -> b.compareTo(a))
                 .toList();
     }
 
@@ -35,7 +54,7 @@ public class PlataformaServiceImpl implements PlataformaService {
     }
 
     @Override
-    public boolean estaEnUso(Long id) { // ← NUEVO
+    public boolean estaEnUso(Long id) {
         PlataformaEntidad plataforma = plataformaRepository.findById(id)
                 .orElseThrow(() -> new PlataformaNoEncontradaException("Plataforma no encontrada: " + id));
 

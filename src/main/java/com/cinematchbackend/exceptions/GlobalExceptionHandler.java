@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CodigoSalaInvalidoException.class)
     public ResponseEntity<Map<String, Object>> handleCodigoSalaInvalido(CodigoSalaInvalidoException ex) {
-        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return buildResponse(HttpStatus.BAD_REQUEST, "Código de sala inválido");
     }
 
     @ExceptionHandler(SalaActivaException.class)
@@ -63,12 +63,69 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
-        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        return buildResponse(HttpStatus.UNAUTHORIZED, "Credenciales incorrectas");
     }
 
     @ExceptionHandler(TokenInvalidoException.class)
     public ResponseEntity<Map<String, Object>> handleTokenInvalido(TokenInvalidoException ex) {
         return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<Map<String, Object>> handleAuthorization(AuthorizationException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Map<String, Object>> handleValidation(ValidationException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(CalificacionInvalidaException.class)
+    public ResponseEntity<Map<String, Object>> handleCalificacionInvalida(CalificacionInvalidaException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(CalificacionDuplicadaException.class)
+    public ResponseEntity<Map<String, Object>> handleCalificacionDuplicada(CalificacionDuplicadaException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(SalaNoFinalizadaException.class)
+    public ResponseEntity<Map<String, Object>> handleSalaNoFinalizada(SalaNoFinalizadaException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(UsuarioDesconectadoException.class)
+    public ResponseEntity<Map<String, Object>> handleUsuarioDesconectado(UsuarioDesconectadoException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(TestModeNotEnabledException.class)
+    public ResponseEntity<Map<String, Object>> handleTestMode(TestModeNotEnabledException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    // R-BE-01: Nuevas excepciones de validación
+    @ExceptionHandler(CamposVaciosException.class)
+    public ResponseEntity<Map<String, Object>> handleCamposVacios(CamposVaciosException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, "Completa todos los campos");
+    }
+
+    @ExceptionHandler(NombreRequeridoException.class)
+    public ResponseEntity<Map<String, Object>> handleNombreRequerido(NombreRequeridoException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, "El nombre es requerido");
+    }
+
+    // R-BE-02/03: Excepciones de seguridad
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String, Object>> handleUnauthorized(UnauthorizedException ex) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, "Autenticación requerida");
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Map<String, Object>> handleForbidden(ForbiddenException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, "No tienes permisos para realizar esta acción");
     }
 
     @ExceptionHandler(Exception.class)

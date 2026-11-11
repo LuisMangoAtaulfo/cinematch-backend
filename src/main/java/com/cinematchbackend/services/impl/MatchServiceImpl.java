@@ -14,6 +14,7 @@ import com.cinematchbackend.services.interfaces.EventPublisherService;
 import com.cinematchbackend.services.interfaces.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,7 +35,20 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    public List<MatchResponseDTO> obtenerMatchesUsuario(Long usuarioId) {
+        return matchRepository.findByUsuarioEnSala(usuarioId).stream()
+                .map(this::mapearAResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional
     public MatchEntidad registrarMatch(Long salaId, String contenidoId) {
+        // R-BE-05: atomicidad — evitar matches duplicados
+        if (matchRepository.findBySalaIdAndContenidoContenidoId(salaId, contenidoId).isPresent()) {
+            return null; // match ya existe
+        }
+
         SalaEntidad sala = salaRepository.findById(salaId)
                 .orElseThrow(() -> new SalaNoEncontradaException("Sala no encontrada: " + salaId));
         ContenidoEntidad contenido = contenidoRepository.findById(contenidoId)
@@ -67,6 +81,12 @@ public class MatchServiceImpl implements MatchService {
         dto.setTipo(contenido.getTipo());
         dto.setGenero(contenido.getGenero());
         dto.setImagen(contenido.getImagen());
+        dto.setSinopsis(contenido.getSinopsis());
+        dto.setPlataformas(
+                contenido.getPlataformas().stream()
+                        .map(cp -> cp.getPlataforma().getNombre())
+                        .toList()
+        );
         return dto;
     }
 }

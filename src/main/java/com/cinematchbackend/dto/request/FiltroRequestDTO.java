@@ -11,4 +11,7 @@ public class FiltroRequestDTO {
     private GeneroContenido genero;
     private String plataforma;
     private Integer anio;
+    private String orderBy;
+    private Integer limit;
+    private Integer offset;
 }

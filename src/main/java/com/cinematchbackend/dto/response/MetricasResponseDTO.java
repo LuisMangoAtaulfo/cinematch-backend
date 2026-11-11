@@ -8,4 +8,5 @@ public class MetricasResponseDTO {
     private Long salasActivas;
     private Long totalMatches;
     private Double promedioCalificacion;
+    private Boolean filtroActivo;
 }

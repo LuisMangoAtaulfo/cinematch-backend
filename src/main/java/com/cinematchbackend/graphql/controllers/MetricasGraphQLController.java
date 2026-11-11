@@ -7,6 +7,7 @@ import com.cinematchbackend.services.interfaces.MetricasService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -18,11 +19,13 @@ public class MetricasGraphQLController {
     private final MetricasService metricasService;
 
     @QueryMapping
-    public MetricasResponseDTO metricas() {
-        return metricasService.procesarMetricas();
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public MetricasResponseDTO metricas(@Argument String desde, @Argument String hasta) {
+        return metricasService.procesarMetricas(desde, hasta);
     }
 
     @QueryMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public List<MetricasHistorialResponseDTO> historialMetricas() {
         return metricasService.obtenerHistorial();
     }

@@ -1,0 +1,34 @@
+# ══════════════════════════════════════════════════════════
+# TEST FIXTURES (solo en modo TEST_MODE=true)
+# ══════════════════════════════════════════════════════════
+
+type TestSalaPayload {
+    codigo: String!
+    salaId: ID!
+}
+
+extend type Mutation {
+    # ── Fixtures ──────────────────────────────────────────────
+    crearSalaTest(usuario1Id: ID!, usuario2Id: ID, estado: String): TestSalaPayload!
+    unirUsuarioTest(codigo: String!, usuarioId: ID!): Boolean!
+    finalizarSalaTest(codigo: String!): Boolean!
+    limpiarDatosTest: Boolean!
+    insertarContenidoTest(contenido: ContenidoTestInput!): Boolean!
+
+    # ── Simulaciones ──────────────────────────────────────────
+    simularEvaluacion(salaId: ID!, usuarioId: ID!, contenidoId: String!, evaluacion: Boolean!): Boolean!
+    simularMensaje(salaId: ID!, usuarioId: ID!, texto: String!): Boolean!
+    simularUnion(salaCodigo: String!, usuarioId: ID!): Boolean!
+    simularDesconexion(salaId: ID!, usuarioId: ID!): Boolean!
+    simularReconexion(salaId: ID!, usuarioId: ID!): Boolean!
+}
+
+input ContenidoTestInput {
+    contenidoId: String!
+    titulo: String!
+    anio: Int!
+    tipo: TipoContenido!
+    genero: GeneroContenido!
+    imagen: String
+    sinopsis: String
+}

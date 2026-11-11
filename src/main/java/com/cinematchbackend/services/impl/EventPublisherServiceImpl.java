@@ -1,5 +1,8 @@
 package com.cinematchbackend.services.impl;
 
+import com.cinematchbackend.dto.response.CambioSalaDTO;
+import com.cinematchbackend.dto.response.EstadoCompaneroDTO;
+import com.cinematchbackend.dto.response.EvaluacionNotificationDTO;
 import com.cinematchbackend.dto.response.MatchResponseDTO;
 import com.cinematchbackend.dto.response.MensajeResponseDTO;
 import com.cinematchbackend.services.interfaces.EventPublisherService;
@@ -12,11 +15,6 @@ import reactor.core.publisher.Sinks;
 @Slf4j
 public class EventPublisherServiceImpl implements EventPublisherService {
 
-    // autoCancel=false: sin esto, cuando el último suscriptor se desconecta el
-    // sink queda completado permanentemente y todas las suscripciones futuras
-    // reciben un Flux vacío (los eventos en vivo se perdían tras el primer
-    // navigate/refresh). Los eventos emitidos sin suscriptores quedan en el
-    // buffer de 256 y se entregan al siguiente suscriptor.
     private final Sinks.Many<MensajeResponseDTO> mensajesSink =
             Sinks.many().multicast().onBackpressureBuffer(256, false);
 
@@ -26,28 +24,43 @@ public class EventPublisherServiceImpl implements EventPublisherService {
     private final Sinks.Many<Boolean> salaFinalizadaSink =
             Sinks.many().multicast().onBackpressureBuffer(256, false);
 
+    private final Sinks.Many<EstadoCompaneroDTO> estadoCompaneroSink =
+            Sinks.many().multicast().onBackpressureBuffer(256, false);
+
+    private final Sinks.Many<EvaluacionNotificationDTO> evaluacionesSink =
+            Sinks.many().multicast().onBackpressureBuffer(256, false);
+
+    private final Sinks.Many<CambioSalaDTO> cambiosSalaSink =
+            Sinks.many().multicast().onBackpressureBuffer(256, false);
+
     @Override
     public void publicarMensaje(Long salaId, MensajeResponseDTO mensaje) {
-        Sinks.EmitResult result = mensajesSink.tryEmitNext(mensaje);
-        if (result.isFailure()) {
-            log.warn("Error al publicar mensaje para sala {}: {}", salaId, result);
-        }
+        emit(mensajesSink.tryEmitNext(mensaje), "mensaje", salaId);
     }
 
     @Override
     public void publicarMatch(Long salaId, MatchResponseDTO match) {
-        Sinks.EmitResult result = matchesSink.tryEmitNext(match);
-        if (result.isFailure()) {
-            log.warn("Error al publicar match para sala {}: {}", salaId, result);
-        }
+        emit(matchesSink.tryEmitNext(match), "match", salaId);
     }
 
     @Override
     public void publicarSalaFinalizada(Long salaId) {
-        Sinks.EmitResult result = salaFinalizadaSink.tryEmitNext(true);
-        if (result.isFailure()) {
-            log.warn("Error al publicar sala finalizada para sala {}: {}", salaId, result);
-        }
+        emit(salaFinalizadaSink.tryEmitNext(true), "salaFinalizada", salaId);
+    }
+
+    @Override
+    public void publicarEstadoCompanero(Long salaId, EstadoCompaneroDTO estado) {
+        emit(estadoCompaneroSink.tryEmitNext(estado), "estadoCompanero", salaId);
+    }
+
+    @Override
+    public void publicarEvaluacion(Long salaId, EvaluacionNotificationDTO evaluacion) {
+        emit(evaluacionesSink.tryEmitNext(evaluacion), "evaluacion", salaId);
+    }
+
+    @Override
+    public void publicarCambioSala(Long salaId, CambioSalaDTO cambio) {
+        emit(cambiosSalaSink.tryEmitNext(cambio), "cambioSala", salaId);
     }
 
     @Override
@@ -68,5 +81,31 @@ public class EventPublisherServiceImpl implements EventPublisherService {
     public Flux<Boolean> suscribirseSalaFinalizada(Long salaId) {
         return salaFinalizadaSink.asFlux()
                 .doOnSubscribe(s -> log.debug("Suscrito a sala finalizada {}", salaId));
+    }
+
+    @Override
+    public Flux<EstadoCompaneroDTO> suscribirseEstadoCompanero(Long salaId) {
+        return estadoCompaneroSink.asFlux()
+                .doOnSubscribe(s -> log.debug("Suscrito a estado compañero de sala {}", salaId));
+    }
+
+    @Override
+    public Flux<EvaluacionNotificationDTO> suscribirseEvaluaciones(Long salaId) {
+        return evaluacionesSink.asFlux()
+                .filter(e -> salaId.equals(e.getSalaId()))
+                .doOnSubscribe(s -> log.debug("Suscrito a evaluaciones de sala {}", salaId));
+    }
+
+    @Override
+    public Flux<CambioSalaDTO> suscribirseCambiosSala(Long salaId) {
+        return cambiosSalaSink.asFlux()
+                .filter(c -> salaId.equals(c.getSalaId()))
+                .doOnSubscribe(s -> log.debug("Suscrito a cambios de sala {}", salaId));
+    }
+
+    private void emit(Sinks.EmitResult result, String tipo, Long salaId) {
+        if (result.isFailure()) {
+            log.warn("Error al publicar {} para sala {}: {}", tipo, salaId, result);
+        }
     }
 }

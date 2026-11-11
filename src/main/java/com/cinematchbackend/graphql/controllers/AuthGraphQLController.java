@@ -4,6 +4,7 @@ import com.cinematchbackend.dto.request.LoginRequestDTO;
 import com.cinematchbackend.dto.request.UsuarioRegistroDTO;
 import com.cinematchbackend.dto.response.AuthResponseDTO;
 import com.cinematchbackend.entities.UsuarioEntidad;
+import com.cinematchbackend.exceptions.CamposVaciosException;
 import com.cinematchbackend.services.interfaces.AdministradorService;
 import com.cinematchbackend.services.interfaces.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,12 @@ public class AuthGraphQLController {
 
     @MutationMapping
     public AuthResponseDTO login(@Argument LoginRequestDTO input) {
+        // R-BE-01: Validar campos vacíos
+        if (input.getCorreo() == null || input.getCorreo().isBlank() ||
+            input.getPassword() == null || input.getPassword().isBlank()) {
+            throw new CamposVaciosException();
+        }
+
         String token = usuarioService.validarCredenciales(input.getCorreo(), input.getPassword());
         String nombre = usuarioService.obtenerNombreUsuarioLogeado(input.getCorreo());
 
@@ -39,6 +46,13 @@ public class AuthGraphQLController {
 
     @MutationMapping
     public AuthResponseDTO registrar(@Argument UsuarioRegistroDTO input) {
+        // R-BE-01: Validar campos vacíos
+        if (input.getNombre() == null || input.getNombre().isBlank() ||
+            input.getCorreo() == null || input.getCorreo().isBlank() ||
+            input.getPassword() == null || input.getPassword().isBlank()) {
+            throw new CamposVaciosException();
+        }
+
         UsuarioEntidad usuario = usuarioService.crearUsuario(input);
         String token = usuarioService.validarCredenciales(input.getCorreo(), input.getPassword());
 
@@ -53,6 +67,12 @@ public class AuthGraphQLController {
 
     @MutationMapping
     public AuthResponseDTO loginAdmin(@Argument LoginRequestDTO input) {
+        // R-BE-01: Validar campos vacíos
+        if (input.getCorreo() == null || input.getCorreo().isBlank() ||
+            input.getPassword() == null || input.getPassword().isBlank()) {
+            throw new CamposVaciosException();
+        }
+
         String token = administradorService.validarCredenciales(input.getCorreo(), input.getPassword());
 
         AuthResponseDTO response = new AuthResponseDTO();

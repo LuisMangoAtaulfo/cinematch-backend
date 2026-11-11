@@ -1,5 +1,7 @@
 package com.cinematchbackend.graphql.controllers;
 
+import com.cinematchbackend.dto.response.EstadoCompaneroDTO;
+import com.cinematchbackend.dto.response.EvaluacionNotificationDTO;
 import com.cinematchbackend.dto.response.MatchResponseDTO;
 import com.cinematchbackend.dto.response.MensajeResponseDTO;
 import com.cinematchbackend.services.interfaces.EventPublisherService;
@@ -37,5 +39,19 @@ public class SubscriptionGraphQLController {
     public Flux<Boolean> salaFinalizada(@Argument Long salaId) {
         log.info("Nueva suscripción a sala finalizada {}", salaId);
         return eventPublisherService.suscribirseSalaFinalizada(salaId);
+    }
+
+    @SubscriptionMapping
+    @PreAuthorize("isAuthenticated()")
+    public Flux<EstadoCompaneroDTO> estadoCompanero(@Argument Long salaId) {
+        log.info("Nueva suscripción a estado compañero de sala {}", salaId);
+        return eventPublisherService.suscribirseEstadoCompanero(salaId);
+    }
+
+    @SubscriptionMapping
+    @PreAuthorize("isAuthenticated()")
+    public Flux<EvaluacionNotificationDTO> evaluacionRecibida(@Argument Long salaId) {
+        log.info("Nueva suscripción a evaluaciones de sala {}", salaId);
+        return eventPublisherService.suscribirseEvaluaciones(salaId);
     }
 }
