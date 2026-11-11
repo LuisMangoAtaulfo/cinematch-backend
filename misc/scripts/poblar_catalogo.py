@@ -7,10 +7,10 @@ de forma pausada para respetar el límite de 40 consultas / 10 s.
 
 Uso:
     export TMDB_API_KEY=<tu_api_key>
-    python3 backend/scripts/poblar_catalogo.py
+    python3 backend/misc/scripts/poblar_catalogo.py
 
 Requisitos:
-    pip install -r backend/scripts/requirements.txt
+    pip install -r backend/misc/scripts/requirements.txt
 
 La primera vez debe haberse arrancado el backend una vez para que
 Hibernate cree las tablas (ddl-auto=update). El script es idempotente:

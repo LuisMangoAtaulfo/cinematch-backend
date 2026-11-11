@@ -6,7 +6,7 @@
 -- Idempotente: ON CONFLICT evita duplicados.
 --
 -- Uso:
---   psql -h localhost -p 5433 -U postgres -d cinematch -f scripts/seed_catalogo.sql
+--   psql -h localhost -p 5433 -U postgres -d cinematch -f misc/scripts/seed_catalogo.sql
 -- ══════════════════════════════════════════════════════════════
 
 BEGIN;

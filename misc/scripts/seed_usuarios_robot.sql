@@ -5,7 +5,7 @@
 -- Password: "test1234" (BCrypt hash)
 --
 -- Uso:
---   psql -h localhost -p 5433 -U postgres -d cinematch -f scripts/seed_usuarios_robot.sql
+--   psql -h localhost -p 5433 -U postgres -d cinematch -f misc/scripts/seed_usuarios_robot.sql
 -- ══════════════════════════════════════════════════════════════
 
 BEGIN;
