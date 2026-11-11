@@ -22,3 +22,20 @@ extend type Query {
     metricas(desde: String, hasta: String): Metricas!
     historialMetricas: [MetricasDia!]!
 }
+
+# ══════════════════════════════════════════════════════════
+# METRICAS DE USUARIO (vista personal)
+# ══════════════════════════════════════════════════════════
+
+type MetricasUsuario {
+    totalSalas: Int!
+    salasActivas: Int!
+    totalMatches: Int!
+    promedioCalificacion: Float!
+    totalEvaluaciones: Int!
+}
+
+extend type Query {
+    metricasUsuario(id: ID!): MetricasUsuario!
+    historialMetricasUsuario(id: ID!): [MetricasDia!]!
+}

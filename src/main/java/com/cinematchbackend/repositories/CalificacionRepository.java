@@ -28,8 +28,16 @@ public interface CalificacionRepository extends JpaRepository<CalificacionEntida
 
     @Query("SELECT c FROM CalificacionEntidad c WHERE c.fecha BETWEEN :inicio AND :fin")
     List<CalificacionEntidad> findByFechaBetween(@Param("inicio") LocalDateTime inicio,
-                                                  @Param("fin") LocalDateTime fin);
+                                                 @Param("fin") LocalDateTime fin);
 
     @Query("SELECT c.valor, COUNT(c) FROM CalificacionEntidad c GROUP BY c.valor ORDER BY c.valor")
     List<Object[]> calcularDistribucion();
+
+    @Query("SELECT AVG(c.valor) FROM CalificacionEntidad c WHERE c.usuario.id = :usuarioId")
+    Double calcularPromedioByUsuario(@Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT AVG(c.valor) FROM CalificacionEntidad c WHERE c.usuario.id = :usuarioId AND c.sala.fechaCreacion BETWEEN :inicio AND :fin")
+    Double calcularPromedioByUsuarioAndFechaCreacionBetween(@Param("usuarioId") Long usuarioId,
+                                                            @Param("inicio") LocalDateTime inicio,
+                                                            @Param("fin") LocalDateTime fin);
 }
