@@ -1,30 +1,27 @@
--- ══════════════════════════════════════════════════════════════
--- SEED USUARIOS DE PRUEBA (R-BE-01)
--- ══════════════════════════════════════════════════════════════
--- Crea los usuarios de prueba necesarios para Robot Framework.
--- Password: "test1234" (BCrypt hash)
+-- Script para sembrar usuarios de prueba para Robot Framework
+-- Usuarios:
+--   test1@cinematch.com / Test1234
+--   test2@cinematch.com / Test1234
+--   admin@cinematch.com / Admin1234
 --
--- Uso:
---   psql -h localhost -p 5433 -U postgres -d cinematch -f misc/scripts/seed_usuarios_robot.sql
--- ══════════════════════════════════════════════════════════════
+-- Uso: PGPASSWORD=1234 psql -h localhost -p 5433 -U postgres -d cinematch -f seed_usuarios_robot.sql
 
-BEGIN;
+-- Usuario test1
+INSERT INTO usuarios (correo, password, nombre, descripcion, rol)
+VALUES ('test1@cinematch.com', '$2a$12$R.VBML2hJcq8mvKNXb/J6uUFpEA3iETKoCZM9k.p.hZ6pwcUK5SFq', 'Usuario Test 1', NULL, 'USUARIO')
+ON CONFLICT (correo) DO NOTHING;
 
-INSERT INTO usuarios (nombre, correo, password, rol, descripcion) VALUES
-    ('Usuario Test 1', 'test1@cinematch.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'USUARIO', 'Usuario de prueba 1 para Robot Framework'),
-    ('Usuario Test 2', 'test2@cinematch.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'USUARIO', 'Usuario de prueba 2 para Robot Framework'),
-    ('Admin Test',     'admin@cinematch.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR', 'Administrador de prueba para Robot Framework')
-ON CONFLICT (correo) DO UPDATE SET
-    nombre = EXCLUDED.nombre,
-    rol    = EXCLUDED.rol;
+-- Usuario test2
+INSERT INTO usuarios (correo, password, nombre, descripcion, rol)
+VALUES ('test2@cinematch.com', '$2a$12$R.VBML2hJcq8mvKNXb/J6uUFpEA3iETKoCZM9k.p.hZ6pwcUK5SFq', 'Usuario Test 2', NULL, 'USUARIO')
+ON CONFLICT (correo) DO NOTHING;
 
--- También crear en la tabla de administradores (para loginAdmin)
-INSERT INTO administradores (correo, password, rol) VALUES
-    ('admin@cinematch.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR')
-ON CONFLICT (correo) DO UPDATE SET
-    rol = EXCLUDED.rol;
+-- Admin
+INSERT INTO administradores (correo, password, rol)
+VALUES ('admin@cinematch.com', '$2a$12$x4R2X3qwin6KSPZCOCW7geMRi6AKi9ALRtk3d9DgKkA91H0RvSUXi', 'ADMINISTRADOR')
+ON CONFLICT (correo) DO NOTHING;
 
-COMMIT;
-
-SELECT 'Usuarios de prueba creados' AS estado, COUNT(*) AS total FROM usuarios
-WHERE correo IN ('test1@cinematch.com', 'test2@cinematch.com', 'admin@cinematch.com');
+-- Verificar
+SELECT 'Usuarios de prueba creados:' AS mensaje;
+SELECT correo, nombre, rol FROM usuarios WHERE correo LIKE '%@cinematch.com';
+SELECT correo, rol FROM administradores WHERE correo = 'admin@cinematch.com';
