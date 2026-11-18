@@ -235,6 +235,9 @@ psql -h localhost -p 5433 -U postgres -d cinematch -f misc/scripts/seed_dashboar
 > `test_simulaciones`) antes de sembrar. No modifica usuarios, contenidos,
 > plataformas ni administradores. Úsalo solo en desarrollo.
 
+Resultado esperado: 90 días continuos, ~1,200 salas, ~480 matches y ~490
+calificaciones con promedio cercano a 7.9.
+
 ---
 
 ## 🚀 Despliegue
