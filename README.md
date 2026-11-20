@@ -217,6 +217,27 @@ Guía de ejecución: [README del frontend → Pruebas automatizadas](https://git
 > Para limpiar salas/evaluaciones entre corridas usa la mutation `limpiarDatosTest`
 > ([instrucciones](misc/docs/PRUEBAS.md#23-reiniciar-el-estado-entre-corridas)).
 
+### Datos demo para los dashboards
+
+Los dashboards de administración se ven más útiles con historial. El script
+`misc/scripts/seed_dashboard_demo.sql` genera **90 días** de actividad sintética
+(~1,200 salas, matches, calificaciones, evaluaciones y mensajes) usando usuarios
+`demo01@cinematch.com` … `demo12@cinematch.com`.
+
+```bash
+export PGPASSWORD=<contraseña>
+psql -h localhost -p 5433 -U postgres -d cinematch -f misc/scripts/seed_dashboard_demo.sql
+```
+
+> [!WARNING]
+> El script **borra** las tablas transaccionales locales (`salas`, `evaluaciones`,
+> `matches`, `calificaciones`, `mensajes`, `filtros`, `estados_conexion`,
+> `test_simulaciones`) antes de sembrar. No modifica usuarios, contenidos,
+> plataformas ni administradores. Úsalo solo en desarrollo.
+
+Resultado esperado: 90 días continuos, ~1,200 salas, ~480 matches y ~490
+calificaciones con promedio cercano a 7.9.
+
 ---
 
 ## 🚀 Despliegue

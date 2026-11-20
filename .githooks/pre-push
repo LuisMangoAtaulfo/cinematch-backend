@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Ejecuta las pruebas del backend antes de permitir el push.
+# Para saltarlo (usar solo en emergencias): git push --no-verify
+set -e
+
+echo "Ejecutando pruebas del backend antes del push..."
+SPRING_PROFILES_ACTIVE=test ./mvnw -B test
+echo "Pruebas OK. Push permitido."
